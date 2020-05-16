@@ -78,14 +78,16 @@ public class NotificationService extends Service {
     private boolean chatInit = false;
     private RSA rsa;
 
+
     private Emitter.Listener newTransaction = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             try{
+                Log.d(TAG,args[0].toString());
                 String mex = DecryptMessage(args[0].toString());
                 Log.d(TAG,mex);
                 JSONObject res = new JSONObject(mex);
-            
+
                 doNotification("New Transaction",res.getString("msg"),R.drawable.icon,"");
             }catch (Exception e){
                 Log.d(TAG,e.toString());
@@ -97,6 +99,7 @@ public class NotificationService extends Service {
         public void call(final Object... args) {
             
             try{
+                Log.d(TAG,args[0].toString());
                 String mex = DecryptMessage(args[0].toString());
                 Log.d(TAG,mex);
                 JSONObject res = new JSONObject(mex);
@@ -164,9 +167,11 @@ public class NotificationService extends Service {
             JSONObject jsonMex = new JSONObject(encMex);
             String stringMex = jsonMex.toString();
             
-            mSocket.emit("ON_TRANSACTION", stringMex);
-            mSocket.emit("ON_INVOICE", stringMex);
-            mSocket.emit("ON_CHATS", stringMex);
+            //mSocket.emit("ON_TRANSACTION", stringMex);
+            mSocket.emit("transaction:new", stringMex);
+            mSocket.emit("invoice:new", stringMex);
+            //mSocket.emit("ON_INVOICE", stringMex);
+            //mSocket.emit("ON_CHATS", stringMex);
         } catch(Exception e){
             Log.d(TAG,e.toString());
         }
@@ -376,10 +381,12 @@ public class NotificationService extends Service {
                         NotificationService.ApiPubKey = resJson.getString("APIPublicKey");
 
                         //mSocket = IO.socket("http://"+NotificationService.ip+"?x-shockwallet-device-id=7601a723-b6d4-4020-95a6-6113fb40e2f8");
-                        mSocket = IO.socket("http://"+NotificationService.ip+"?x-shockwallet-device-id="+deviceId);
-                        mSocket.on("ON_TRANSACTION", newTransaction);
-                        mSocket.on("ON_INVOICE", newInvoice);
-                        mSocket.on("ON_CHATS", newChat);
+                        mSocket = IO.socket("http://"+NotificationService.ip+"?x-shockwallet-device-id="+deviceId+"&IS_LND_SOCKET=true");
+                        //mSocket.on("ON_TRANSACTION", newTransaction);
+                        mSocket.on("transaction:new", newTransaction);
+                        mSocket.on("invoice:new", newInvoice);
+                        //mSocket.on("ON_INVOICE", newInvoice);
+                        //mSocket.on("ON_CHATS", newChat);
                         mSocket.connect();
                         attemptSend();
                         Log.d(TAG, "Done conn");
