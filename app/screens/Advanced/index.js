@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { Component } from 'react'
 import {
   // Clipboard,
@@ -17,6 +16,7 @@ import Http from 'axios'
 import Big from 'big.js'
 import { connect } from 'react-redux'
 import Logger from 'react-native-file-log'
+import * as Common from 'shock-common'
 import wavesBG from '../../assets/images/waves-bg.png'
 
 import * as CSS from '../../res/css'
@@ -32,15 +32,7 @@ import InfoModal from './InfoModal'
 import AddChannelModal from './Modals/AddChannel'
 import InfoChannelModal from './Modals/InfoChannel'
 // import { Icon } from 'react-native-elements'
-import {
-  fetchChannels,
-  fetchInvoices,
-  fetchPayments,
-  fetchPeers,
-  fetchTransactions,
-  fetchHistory,
-} from '../../actions/HistoryActions'
-import { fetchNodeInfo } from '../../actions/NodeActions'
+
 import AddPeerModal from './Modals/AddPeer'
 import CloseChannelModal from './Modals/CloseChannel'
 import ShockDialog from '../../components/ShockDialog'
@@ -267,6 +259,7 @@ class AdvancedScreen extends Component {
       fetchPayments,
       fetchTransactions,
     } = this.props
+    // @ts-ignore
     const currentData = history[routeName]
 
     if (routeName === 'invoices') {
@@ -714,6 +707,7 @@ class AdvancedScreen extends Component {
             />
             <AccordionItem
               fetchNextPage={this.fetchNextPage('transactions')}
+              // @ts-ignore
               data={history.transactions}
               Item={Transaction}
               title="Transactions"
@@ -783,6 +777,7 @@ class AdvancedScreen extends Component {
           loading={modalLoading}
           channelCapacity={channelCapacity}
           channelPushAmount={channelPushAmount}
+          // @ts-ignore
           peers={history.peers}
           submit={this.addChannel}
           error={err}
@@ -813,7 +808,7 @@ class AdvancedScreen extends Component {
 }
 
 /**
- * @param {typeof import('../../../reducers/index').default} state
+ * @param {Common.Store.State} state
  */
 const mapStateToProps = ({ history, node, wallet, fees }) => ({
   history,
@@ -823,18 +818,19 @@ const mapStateToProps = ({ history, node, wallet, fees }) => ({
 })
 
 const mapDispatchToProps = {
-  fetchChannels,
-  fetchInvoices,
-  fetchPayments,
-  fetchPeers,
-  fetchTransactions,
-  fetchHistory,
-  fetchNodeInfo,
+  fetchChannels: Common.Store.Thunks.History.fetchChannels,
+  fetchInvoices: Common.Store.Thunks.History.fetchInvoices,
+  fetchPayments: Common.Store.Thunks.History.fetchPayments,
+  fetchPeers: Common.Store.Thunks.History.fetchPeers,
+  fetchTransactions: Common.Store.Thunks.History.fetchTransactions,
+  fetchHistory: Common.Store.Thunks.History.fetchHistory,
+  fetchNodeInfo: Common.Store.Thunks.Node.fetchNodeInfo,
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  // @ts-ignore
 )(AdvancedScreen)
 
 const styles = StyleSheet.create({

@@ -1,16 +1,12 @@
-// @ts-nocheck
 import React from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { connect } from 'react-redux'
+import * as Common from 'shock-common'
+
 // @ts-ignore
 import { Dropdown } from 'react-native-material-dropdown'
 import * as CSS from '../../../res/css'
 import InputGroup from '../../../components/InputGroup'
-import {
-  setAmount,
-  setDescription,
-  setUnitSelected,
-} from '../../../actions/InvoiceActions'
 
 /**
  * @typedef {ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps} ConnectedRedux
@@ -36,6 +32,7 @@ const AmountStep = ({
         <InputGroup
           label="Amount"
           value={invoice.amount}
+          // @ts-ignore
           onChange={setAmount}
           style={styles.amountInput}
           type="numeric"
@@ -74,14 +71,14 @@ const AmountStep = ({
 ))
 
 /**
- * @param {typeof import('../../../../reducers/index').default} state
+ * @param {Common.Store.State} state
  */
-const mapStateToProps = ({ invoice }) => ({ invoice })
+const mapStateToProps = ({ invoices }) => ({ invoice: invoices })
 
 const mapDispatchToProps = {
-  setAmount,
-  setDescription,
-  setUnitSelected,
+  setAmount: Common.Store.Actions.Invoices.setAmount,
+  setDescription: Common.Store.Actions.Invoices.setDescription,
+  setUnitSelected: Common.Store.Actions.Invoices.setUnitSelected,
 }
 
 export default connect(

@@ -1,14 +1,14 @@
-// @ts-nocheck
 import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import Logger from 'react-native-file-log'
 import { Slider } from 'react-native-elements'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import * as Common from 'shock-common'
+
 /**
  * @typedef {import('react-navigation').NavigationScreenProp<{}, Params>} Navigation
  */
-import { updateSelectedFee, updateFeesSource } from '../actions/FeesActions'
 import ShockInput from '../components/ShockInput'
 /** @type {number} */
 // @ts-ignore
@@ -18,8 +18,8 @@ export const WALLET_SETTINGS = 'WALLET_SETTINGS'
 
 /**
  * @typedef {object} Fees
- * @prop {import('../actions/FeesActions').feeLevel} feesLevel
- * @prop {import('../actions/FeesActions').feeSource} feesSource
+ * @prop {Common.Schema.FeeLevel} feesLevel
+ * @prop {string} feesSource
  */
 
 /**
@@ -29,7 +29,9 @@ export const WALLET_SETTINGS = 'WALLET_SETTINGS'
 
 /**
  * @typedef {object} Props
- *
+ * @prop {Fees} fees
+ * @prop {(feeLevel: string) => void} updateSelectedFee
+ * @prop {(feesSource: string) => void} updateFeesSource
  */
 
 /**
@@ -114,7 +116,7 @@ class WalletSettings extends React.Component {
    */
   handleSlider = n => {
     /**
-     * @type {import('../actions/FeesActions').feeLevel} level
+     * @type {Common.Schema.FeeLevel} level
      */
     let level = 'MID'
     switch (n) {
@@ -223,18 +225,19 @@ class WalletSettings extends React.Component {
 }
 
 /**
- * @param {typeof import('../../reducers/index').default} state
+ * @param {Common.Store.State} state
  */
 const mapStateToProps = ({ fees }) => ({ fees })
 
 const mapDispatchToProps = {
-  updateSelectedFee,
-  updateFeesSource,
+  updateSelectedFee: Common.Store.Actions.Fees.updateSelectedFee,
+  updateFeesSource: Common.Store.Actions.Fees.updateFeesSource,
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  // @ts-ignore
 )(WalletSettings)
 
 const styles = StyleSheet.create({

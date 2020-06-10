@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { Component } from 'react'
 import {
   View,
@@ -17,17 +16,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 // @ts-ignore
 import SwipeVerify from 'react-native-swipe-verify'
 import Logger from 'react-native-file-log'
+import * as Common from 'shock-common'
 
 import Suggestion from '../../../components/Search/Suggestion'
 import * as CSS from '../../../res/css'
 import * as API from '../../../services/contact-api'
 import ContactsSearch from '../../../components/Search/ContactsSearch'
-import {
-  setInvoiceMode,
-  addInvoice,
-  newAddress,
-} from '../../../actions/InvoiceActions'
-import { resetSelectedContact } from '../../../actions/ChatActions'
+
 import QR from './QR'
 import BitcoinAccepted from '../../../assets/images/bitcoin-accepted.png'
 import { CHATS_ROUTE } from '../../Chats'
@@ -59,7 +54,7 @@ class SendStep extends Component {
     const { amount, description } = invoice
     await Promise.all([
       addInvoice({
-        value: amount,
+        value: Number(amount),
         memo: description,
         expiry: 1800,
       }),
@@ -145,6 +140,7 @@ class SendStep extends Component {
   }
 
   sendInvoice = async () => {
+    // @ts-ignore
     const { chat, invoice, navigation } = this.props
     const { selectedContact } = chat
     const { paymentRequest } = invoice
@@ -198,6 +194,7 @@ class SendStep extends Component {
             <View style={styles.invoiceDetails}>
               <TouchableOpacity
                 style={styles.editInvoiceDetailsContainer}
+                // @ts-ignore
                 onPress={this.props.editInvoice}
               >
                 <Text style={styles.editInvoice}>Change</Text>
@@ -256,20 +253,21 @@ class SendStep extends Component {
 }
 
 /**
- * @param {typeof import('../../../../reducers/index').default} state
+ * @param {Common.Store.State} state
  */
-const mapStateToProps = ({ invoice, chat }) => ({ invoice, chat })
+const mapStateToProps = ({ invoices, chat }) => ({ invoice: invoices, chat })
 
 const mapDispatchToProps = {
-  setInvoiceMode,
-  addInvoice,
-  resetSelectedContact,
-  newAddress,
+  setInvoiceMode: Common.Store.Actions.Invoices.setInvoiceMode,
+  addInvoice: Common.Store.Thunks.Invoices.addInvoice,
+  resetSelectedContact: Common.Store.Actions.Chat.resetSelectedContact,
+  newAddress: Common.Store.Thunks.Invoices.newAddress,
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  // @ts-ignore
 )(SendStep)
 
 const styles = StyleSheet.create({

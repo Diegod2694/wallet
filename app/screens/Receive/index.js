@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { Component } from 'react'
 import {
   // Clipboard,
@@ -12,12 +11,12 @@ import {
 import { withNavigationFocus } from 'react-navigation'
 import Big from 'big.js'
 import { connect } from 'react-redux'
+import * as Common from 'shock-common'
+
 import AmountStep from './components/AmountStep'
 import SendStep from './components/SendStep'
 import wavesBG from '../../assets/images/shock-bg.png'
 import Nav from '../../components/Nav'
-import { resetSelectedContact } from '../../actions/ChatActions'
-import { resetInvoice } from '../../actions/InvoiceActions'
 
 import * as CSS from '../../res/css'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -105,10 +104,12 @@ class ReceiveScreen extends Component {
     const { step } = this.state
     const { navigation } = this.props
     if (step === 1) {
+      // @ts-ignore
       return <AmountStep navigation={navigation} />
     }
 
     if (step === 2) {
+      // @ts-ignore
       return <SendStep navigation={navigation} editInvoice={this.setStep(1)} />
     }
 
@@ -171,13 +172,13 @@ class ReceiveScreen extends Component {
 }
 
 /**
- * @param {typeof import('../../../reducers/index').default} state
+ * @param {Common.Store.State} state
  */
-const mapStateToProps = ({ invoice }) => ({ invoice })
+const mapStateToProps = ({ invoices }) => ({ invoice: invoices })
 
 const mapDispatchToProps = {
-  resetInvoice,
-  resetSelectedContact,
+  resetInvoice: Common.Store.Actions.Invoices.resetInvoice,
+  resetSelectedContact: Common.Store.Actions.Chat.resetSelectedContact,
 }
 
 export default connect(
