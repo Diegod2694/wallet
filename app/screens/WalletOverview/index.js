@@ -22,7 +22,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Logger from 'react-native-file-log'
 import SocketManager from '../../services/socket'
 import { connect } from 'react-redux'
-import { Schema } from 'shock-common'
+import * as Common from 'shock-common'
 
 //import { compose } from 'redux'
 import * as Navigation from '../../services/navigation'
@@ -46,17 +46,6 @@ import btcConvert from '../../services/convertBitcoin'
 import * as ContactAPI from '../../services/contact-api'
 import * as CSS from '../../res/css'
 import * as Wallet from '../../services/wallet'
-
-import { getUSDRate, getWalletBalance } from '../../actions/WalletActions'
-import { fetchNodeInfo } from '../../actions/NodeActions'
-import {
-  fetchRecentTransactions,
-  fetchRecentPayments,
-  fetchRecentInvoices,
-  loadNewInvoice,
-  loadNewTransaction,
-} from '../../actions/HistoryActions'
-import { subscribeOnChats } from '../../actions/ChatActions'
 
 import { CHATS_ROUTE } from '../../screens/Chats'
 
@@ -86,17 +75,21 @@ import * as Cache from '../../services/cache'
  */
 
 /**
+ * @typedef {ReturnType<typeof Common.Store.Actions.Node.loadNodeInfo>['data']} GetInfo
+ */
+
+/**
  * @typedef {object} Props
  * @prop {Navigation} navigation
  * @prop {{ USDRate: number, totalBalance: string|null }} wallet
  * @prop {{ unifiedTransactions: (Wallet.Invoice|Wallet.Payment|Wallet.Transaction)[] }} history
- * @prop {{ nodeInfo: import('../../actions/NodeActions').GetInfo }} node
+ * @prop {{ nodeInfo: GetInfo }} node
  * @prop {() => Promise<void>} fetchRecentTransactions
  * @prop {() => Promise<void>} fetchRecentPayments
  * @prop {() => Promise<void>} fetchRecentInvoices
- * @prop {() => Promise<import('../../actions/WalletActions').WalletBalance>} getWalletBalance
- * @prop {() => Promise<import('../../actions/NodeActions').GetInfo>} fetchNodeInfo
- * @prop {() => Promise<Schema.Chat[]>} subscribeOnChats
+ * @prop {() => Promise<void>} getWalletBalance
+ * @prop {() => Promise<GetInfo>} fetchNodeInfo
+ * @prop {() => Promise<Common.Schema.Chat[]>} subscribeOnChats
  * @prop {() => Promise<number>} getUSDRate
  * @prop {(invoice: Wallet.Invoice) => void} loadNewInvoice
  * @prop {(transaction: Wallet.Transaction) => void} loadNewTransaction
@@ -1874,20 +1867,21 @@ const mapStateToProps = ({ wallet, history, node, fees }) => ({
 })
 
 const mapDispatchToProps = {
-  getUSDRate,
-  getWalletBalance,
-  fetchRecentTransactions,
-  fetchNodeInfo,
-  fetchRecentInvoices,
-  fetchRecentPayments,
-  subscribeOnChats,
-  loadNewInvoice,
-  loadNewTransaction,
+  getUSDRate: Common.Store.Thunks.Wallet.getUSDRate,
+  getWalletBalance: Common.Store.Thunks.Wallet.getWalletBalance,
+  fetchRecentTransactions: Common.Store.Thunks.History.fetchRecentTransactions,
+  fetchNodeInfo: Common.Store.Thunks.Node.fetchNodeInfo,
+  fetchRecentInvoices: Common.Store.Thunks.History.fetchRecentInvoices,
+  fetchRecentPayments: Common.Store.Thunks.History.fetchRecentPayments,
+  subscribeOnChats: Common.Store.Thunks.Chat.subscribeOnChats,
+  loadNewInvoice: Common.Store.Thunks.Invoices.addInvoice,
+  loadNewTransaction: Common.Store.Thunks.History.loadNewTransaction,
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  // @ts-expect-error
 )(WalletOverview)
 
 const styles = StyleSheet.create({

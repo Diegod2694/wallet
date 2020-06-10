@@ -12,6 +12,7 @@ import {
 import moment from 'moment'
 import Http from 'axios'
 import Logger from 'react-native-file-log'
+import * as Common from 'shock-common'
 
 import { Provider } from 'react-redux'
 
@@ -21,7 +22,6 @@ import RNBootSplash from 'react-native-bootsplash'
 // @ts-ignore
 import url from 'url'
 
-import { throttledExchangeKeyPair } from './app/actions/ConnectionActions'
 import * as NavigationService from './app/services/navigation'
 import * as Cache from './app/services/cache'
 import * as Encryption from './app/services/encryption'
@@ -332,12 +332,16 @@ const decryptResponse = async response => {
         path,
       )
       cache.clear()
-      await throttledExchangeKeyPair({
-        deviceId: connection.deviceId,
-        sessionId: response.headers['x-session-id'],
-        cachedSessionId: connection.sessionId,
-        baseURL: response.config.baseURL,
-      })(store.dispatch, store.getState, {})
+
+      await store.dispatch(
+        Common.Store.Thunks.Connection.throttledExchangeKeyPair({
+          deviceId: connection.deviceId,
+          sessionId: response.headers['x-session-id'],
+          cachedSessionId: connection.sessionId,
+          baseURL: response.config.baseURL,
+        }),
+      )
+
       cache.clear()
     }
 
@@ -414,12 +418,16 @@ Http.interceptors.response.use(
           decryptedResponse.data,
         )
         cache.clear()
-        await throttledExchangeKeyPair({
-          deviceId: connection.deviceId,
-          sessionId: decryptedResponse.headers['x-session-id'],
-          cachedSessionId: connection.sessionId,
-          baseURL: decryptedResponse.config.baseURL,
-        })(store.dispatch, store.getState, {})
+
+        await store.dispatch(
+          Common.Store.Thunks.Connection.throttledExchangeKeyPair({
+            deviceId: connection.deviceId,
+            sessionId: decryptedResponse.headers['x-session-id'],
+            cachedSessionId: connection.sessionId,
+            baseURL: decryptedResponse.config.baseURL,
+          }),
+        )
+
         cache.clear()
         // eslint-disable-next-line require-atomic-updates
         decryptedResponse.config.headers['x-shockwallet-device-id'] =

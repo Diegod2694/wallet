@@ -10,6 +10,7 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo'
 import { connect } from 'react-redux'
 import Logger from 'react-native-file-log'
+import * as Common from 'shock-common'
 
 /**
  * @typedef {import('react-navigation').NavigationScreenProp<{}>} Navigation
@@ -32,7 +33,6 @@ import OnboardingScreen, {
 import OnboardingInput from '../../components/OnboardingInput'
 import OnboardingBtn from '../../components/OnboardingBtn'
 import FlexCenter from '../../components/FlexCenter'
-import { throttledExchangeKeyPair } from '../../actions/ConnectionActions'
 
 export const CREATE_WALLET_OR_ALIAS = 'CREATE_WALLET_OR_ALIAS'
 
@@ -399,12 +399,13 @@ class CreateWalletOrAlias extends React.Component {
 }
 
 /**
- * @param {typeof import('../../../reducers/index').default} state
+ * @param {Common.Store.State} state
  */
 const mapStateToProps = ({ connection }) => ({ connection })
 
 const mapDispatchToProps = {
-  throttledExchangeKeyPair,
+  throttledExchangeKeyPair:
+    Common.Store.Thunks.Connection.throttledExchangeKeyPair,
 }
 
 export default connect(

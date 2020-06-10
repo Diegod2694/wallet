@@ -23,6 +23,8 @@ import SwipeVerify from 'react-native-swipe-verify'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 import Big from 'big.js'
+import * as Common from 'shock-common'
+
 import wavesBG from '../../assets/images/shock-bg.png'
 import Nav from '../../components/Nav'
 import InputGroup from '../../components/InputGroup'
@@ -34,11 +36,7 @@ import BitcoinAccepted from '../../assets/images/bitcoin-accepted.png'
 import * as CSS from '../../res/css'
 import * as Wallet from '../../services/wallet'
 import * as API from '../../services/contact-api/index'
-import { selectContact, resetSelectedContact } from '../../actions/ChatActions'
-import {
-  resetInvoice,
-  decodePaymentRequest,
-} from '../../actions/InvoiceActions'
+
 import { WALLET_OVERVIEW } from '../WalletOverview'
 export const SEND_SCREEN = 'SEND_SCREEN'
 
@@ -47,7 +45,7 @@ export const SEND_SCREEN = 'SEND_SCREEN'
  */
 
 /**
- * @typedef {import('../../actions/ChatActions').Contact | import('../../actions/ChatActions').BTCAddress} ContactTypes
+ * @typedef {Common.Store.Actions.Chat.Contact | Common.Store.Actions.Chat.BTCAddress} ContactTypes
  */
 
 /**
@@ -57,13 +55,13 @@ export const SEND_SCREEN = 'SEND_SCREEN'
 /**
  * @typedef {object} Props
  * @prop {(Navigation)=} navigation
- * @prop {import('../../../reducers/ChatReducer').State} chat
- * @prop {import('../../../reducers/InvoiceReducer').State} invoice
+ * @prop {Common.Store.State['chat']} chat
+ * @prop {Common.Store.State['invoices']} invoice
  * @prop {(contact: ContactTypes) => ContactTypes} selectContact
  * @prop {() => void} resetSelectedContact
  * @prop {() => void} resetInvoice
  * @prop {(invoice: string) => Promise<DecodeResponse>} decodePaymentRequest
- * @prop {import('../../../reducers/FeesReducer').State} fees
+ * @prop {Common.Store.State['fees']} fees
  */
 
 /**
@@ -566,22 +564,23 @@ class SendScreen extends Component {
 }
 
 /** @param {{
- * invoice: import('../../../reducers/InvoiceReducer').State,
- * chat: import('../../../reducers/ChatReducer').State,
- * fees: import('../../../reducers/FeesReducer').State,
+ * invoice: Common.Store.State['invoices'],
+ * chat:Common.Store.State['chat'],
+ * fees: Common.Store.State['fees'],
  * }} state */
 const mapStateToProps = ({ chat, invoice, fees }) => ({ chat, invoice, fees })
 
 const mapDispatchToProps = {
-  selectContact,
-  resetSelectedContact,
-  resetInvoice,
-  decodePaymentRequest,
+  selectContact: Common.Store.Actions.Chat.selectContact,
+  resetSelectedContact: Common.Store.Actions.Chat.resetSelectedContact,
+  resetInvoice: Common.Store.Actions.Invoices.resetInvoice,
+  decodePaymentRequest: Common.Store.Thunks.Invoices.decodePaymentRequest,
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  // @ts-expect-error TODO
 )(SendScreen)
 
 const styles = StyleSheet.create({

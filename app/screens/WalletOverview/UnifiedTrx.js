@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import * as Common from 'shock-common'
 
 import * as Wallet from '../../services/wallet'
 import * as CSS from '../../res/css'
@@ -121,7 +122,7 @@ class UnifiedTransactions extends React.Component {
 }
 
 /**
- * @param {typeof import('../../../reducers/index').default} state
+ * @param {Common.Store.State} state
  */
 const mapStateToProps = ({ wallet }) => ({
   wallet,

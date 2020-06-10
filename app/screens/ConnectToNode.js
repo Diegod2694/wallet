@@ -6,6 +6,7 @@ import { Text, View, Linking } from 'react-native'
 import { connect } from 'react-redux'
 import Logger from 'react-native-file-log'
 import InAppBrowser from 'react-native-inappbrowser-reborn'
+import * as Common from 'shock-common'
 /**
  * @typedef {import('react-navigation').NavigationScreenProp<{}, Params>} Navigation
  */
@@ -24,7 +25,6 @@ import OnboardingScreen, {
 } from '../components/OnboardingScreen'
 import OnboardingInput from '../components/OnboardingInput'
 import OnboardingBtn from '../components/OnboardingBtn'
-import { throttledExchangeKeyPair } from '../actions/ConnectionActions'
 /** @type {number} */
 // @ts-ignore
 const shockBG = require('../assets/images/shock-bg.png')
@@ -321,12 +321,13 @@ class ConnectToNode extends React.Component {
 }
 
 /**
- * @param {typeof import('../../reducers/index').default} state
+ * @param {Common.Store.State} state
  */
 const mapStateToProps = ({ connection }) => ({ connection })
 
 const mapDispatchToProps = {
-  throttledExchangeKeyPair,
+  throttledExchangeKeyPair:
+    Common.Store.Thunks.Connection.throttledExchangeKeyPair,
 }
 
 export default connect(

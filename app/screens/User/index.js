@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { Schema } from 'shock-common'
+import * as Common from 'shock-common'
 /**
  * @typedef {import('react-navigation').NavigationScreenProp<{}, Routes.UserParams>} Navigation
  */
@@ -19,10 +19,9 @@ import * as CSS from '../../res/css'
 import { ConnectedShockAvatar } from '../../components/ShockAvatar'
 import QR from '../WalletOverview/QR'
 import Pad from '../../components/Pad'
-import * as Reducers from '../../../reducers'
 import * as Routes from '../../routes'
 /**
- * @typedef {Schema.User} UserType
+ * @typedef {Common.Schema.User} UserType
  */
 
 /**
@@ -128,16 +127,16 @@ class User extends React.Component {
   }
 }
 
+// TODO returns typing
+
 /**
- * @param {Reducers.State} state
- * @returns {Props}
+ * @param {Common.Store.State} state
  */
 const mapStateToProps = state => {
-  //  TODO: find out a way to get a single user here
-  const users = Reducers.selectAllUsers(state)
+  //  TODO: find out a way to get a single user here, use a selector
+  const { users } = state
 
   return {
-    // @ts-ignore
     users: Object.values(users),
   }
 }

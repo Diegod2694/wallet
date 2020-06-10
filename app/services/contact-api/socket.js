@@ -5,15 +5,16 @@ import SocketIO from 'socket.io-client'
 import isEmpty from 'lodash/isEmpty'
 import debounce from 'lodash/debounce'
 import Logger from 'react-native-file-log'
-import { Constants } from 'shock-common'
+import * as Common from 'shock-common'
 
 import * as Cache from '../../services/cache'
-import { ACTIONS as ConnectionAction } from '../../actions/ConnectionActions'
 
 import * as Events from './events'
 import * as Encryption from '../encryption'
 
-const { Action } = Constants
+const {
+  Constants: { Action },
+} = Common
 
 // TO DO: move to common repo
 /**
@@ -39,25 +40,21 @@ const { Action } = Constants
  */
 
 /**
- * @typedef {import('redux').Store<{ connection: import('../../../reducers/ConnectionReducer').State } & import('redux-persist/es/persistReducer').PersistPartial, import('redux').Action<any>> & { dispatch: any; }} ReduxStore
- */
-
-/**
  * @type {SimpleSocket|null}
  */
 // eslint-disable-next-line init-declarations
 export let socket = null
 
 /**
- * @type {ReduxStore}
+ * @type {Common.Store.ShockStore}
  */
 // eslint-disable-next-line init-declarations
 export let store
 
 /**
  * Set Redux Store for use along with end-to-end encryption
- * @param {ReduxStore} initializedStore
- * @returns {ReduxStore} Returns the initialized Redux store
+ * @param {Common.Store.ShockStore} initializedStore
+ * @returns {Common.Store.ShockStore} Returns the initialized Redux store
  */
 export const setStore = initializedStore => {
   store = initializedStore
@@ -223,7 +220,7 @@ export const disconnect = () => {
     // @ts-ignore
     socket.off()
 
-    store.dispatch({ type: ConnectionAction.SOCKET_DID_DISCONNECT })
+    store.dispatch(Common.Store.Actions.Connection.socketDidDisconnect)
 
     // @ts-ignore
     socket.disconnect()
@@ -274,14 +271,14 @@ export const connect = debounce(async () => {
 
   socket.on('disconnect', reason => {
     Logger.log(`reason for disconnect: ${reason}`)
-    store.dispatch({ type: ConnectionAction.SOCKET_DID_DISCONNECT })
+    store.dispatch(Common.Store.Actions.Connection.socketDidDisconnect())
   })
 
   socket.on('connect', () => {
-    store.dispatch({ type: ConnectionAction.SOCKET_DID_CONNECT })
+    store.dispatch(Common.Store.Actions.Connection.socketDidConnect())
   })
 
-  store.dispatch({ type: ConnectionAction.SOCKET_DID_CONNECT })
+  store.dispatch(Common.Store.Actions.Connection.socketDidConnect())
 
   lastConnCheck = Date.now()
 

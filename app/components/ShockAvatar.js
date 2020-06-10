@@ -6,13 +6,13 @@ import { StyleSheet } from 'react-native'
 import { Avatar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { withNavigation } from 'react-navigation'
+import * as Common from 'shock-common'
 /**
  * @typedef {import('react-navigation').NavigationScreenProp<{}, {}>} Navigation
  */
 
 import * as CSS from '../res/css'
 import { isOnline, SET_LAST_SEEN_APP_INTERVAL } from '../services/utils'
-import * as Reducers from '../../reducers'
 import * as Routes from '../routes'
 
 const DEFAULT_USER_IMAGE =
@@ -84,13 +84,22 @@ const styles = StyleSheet.create({
  */
 
 /**
- * @param {Reducers.State} state
+ * @param {Common.Store.State} state
  * @param {ConnectedProps & { navigation: Navigation }} ownProps
  * @returns {Props}
  */
 const mapStateToProps = (state, ownProps) => {
   const { publicKey } = ownProps
-  const user = Reducers.selectUser(state, { publicKey })
+
+  // TODO use a selector
+  const user = state.users[publicKey] || {
+    avatar: null,
+    bio: null,
+    displayName: null,
+    lastSeenApp: 0,
+    lastSeenNode: 0,
+    publicKey,
+  }
 
   return {
     ...ownProps,

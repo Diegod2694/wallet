@@ -1,25 +1,22 @@
 import SocketIO from 'socket.io-client'
 import isEmpty from 'lodash/isEmpty'
 import Logger from 'react-native-file-log'
+import * as Common from 'shock-common'
 
 import * as Cache from './cache'
 import * as Encryption from './encryption'
-
-/**
- * @typedef {import('redux').Store<{ connection: import('../../reducers/ConnectionReducer').State } & import('redux-persist/es/persistReducer').PersistPartial, import('redux').Action<any>> & { dispatch: any; }} ReduxStore
- */
 
 class Socket {
   /** @type {any} */
   socketInstance = null
 
-  /** @type {ReduxStore?} */
+  /** @type {Common.Store.ShockStore?} */
   store = null
 
   /**
    * Set Redux Store for use along with end-to-end encryption
-   * @param {ReduxStore} store
-   * @returns {ReduxStore} Returns the initialized Redux store
+   * @param {Common.Store.ShockStore} store
+   * @returns {Common.Store.ShockStore} Returns the initialized Redux store
    */
   setStore = store => {
     this.store = store

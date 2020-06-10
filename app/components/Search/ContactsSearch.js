@@ -12,14 +12,13 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 import Logger from 'react-native-file-log'
+import * as Common from 'shock-common'
 import Suggestion from './Suggestion'
-import { selectContact } from '../../actions/ChatActions'
-import { decodePaymentRequest } from '../../actions/InvoiceActions'
 
 import * as CSS from '../../res/css'
 
 /**
- * @typedef {import('../../actions/ChatActions').SelectedContact} ContactTypes
+ * @typedef {Common.Store.Actions.Chat.SelectedContact} ContactTypes
  */
 
 /**
@@ -44,7 +43,7 @@ import * as CSS from '../../res/css'
  * @prop {(string)=} placeholder
  * @prop {(contact: ContactTypes) => void} selectContact
  * @prop {(paymentRequest: string) => DecodeResponse} decodePaymentRequest
- * @prop {{ contacts: import('../../actions/ChatActions').Contact[] }} chat
+ * @prop {{ contacts: Common.Store.Actions.Chat.Contact[] }} chat
  */
 
 /**
@@ -64,7 +63,7 @@ class ContactsSearch extends PureComponent {
   defaultFeatures = ['btc', 'invoice', 'contacts']
 
   /**
-   * @param {import('../../actions/ChatActions').SelectedContact} item
+   * @param {Common.Store.Actions.Chat.SelectedContact} item
    * @param {number} index
    * @returns {string}
    */
@@ -163,7 +162,7 @@ class ContactsSearch extends PureComponent {
     const { value, chat } = this.props
     const { contacts } = chat
     return contacts.filter(contact =>
-      contact.displayName.toLowerCase().includes(value.toLowerCase()),
+      contact?.displayName?.toLowerCase().includes(value.toLowerCase()),
     )
   }
 
@@ -238,12 +237,12 @@ class ContactsSearch extends PureComponent {
   }
 }
 
-/** @param {import('../../../reducers/index').default} state */
+/** @param {Common.Store.State} state */
 const mapStateToProps = ({ chat }) => ({ chat })
 
 const mapDispatchToProps = {
-  selectContact,
-  decodePaymentRequest,
+  selectContact: Common.Store.Actions.Chat.selectContact,
+  decodePaymentRequest: Common.Store.Thunks.Invoices.decodePaymentRequest,
 }
 
 export default connect(
