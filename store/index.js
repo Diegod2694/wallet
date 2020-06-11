@@ -3,6 +3,12 @@ import { persistStore, persistCombineReducers } from 'redux-persist'
 // @ts-expect-error
 import _createSensitiveStorage from 'redux-persist-sensitive-storage'
 import * as Common from 'shock-common'
+import Http from 'axios'
+import { RSAKeychain } from 'react-native-rsa-native'
+import * as Events from '../app/services/contact-api/events'
+import Big from 'big.js'
+import { getToken } from '../app/services/cache'
+import uuidv4 from 'uuid/v4'
 /**
  * @typedef {import('redux-persist').PersistConfig<Common.Store.State>} ShockPersistConfig
  * @typedef {import('redux-persist').Storage} Storage
@@ -36,14 +42,7 @@ const config = {
 }
 
 /**
- * @typedef {{
- *   [K in keyof Common.Store.State]: Redux.Reducer<Common.Store.State[K], Common.Store.Actions.ShockAction>
- * }} ReducersObj
- */
-
-/**
- *
- * @param {ReducersObj} reducers
+ * @param {Common.Store.ReducersObj} reducers
  * @returns {RootReducer}
  */
 const persistedCombineReducers = reducers => {
@@ -58,6 +57,25 @@ const persistedCombineReducers = reducers => {
 
 export default () => {
   const store = Common.Store.createStore({
+    Http,
+    RSAKeychain,
+    // @ts-expect-error
+    bigConstructor: Big,
+    eventProviders: {
+      onChats: Events.onChats,
+      onReceivedRequests: Events.onReceivedRequests,
+      onSentRequests: Events.onSentRequests,
+    },
+    async getToken() {
+      const tok = await getToken()
+
+      if (!tok) {
+        throw new Error(`token not found at store.getToken`)
+      }
+
+      return tok
+    },
+    uuidv4,
     // @ts-expect-error TODO
     combineReducers: persistedCombineReducers,
   })

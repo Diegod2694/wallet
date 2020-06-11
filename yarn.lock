@@ -1276,6 +1276,11 @@
   resolved "https://registry.npm.taobao.org/@types/stack-utils/download/@types/stack-utils-1.0.1.tgz?cache=0&sync_timestamp=1580844116374&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fstack-utils%2Fdownload%2F%40types%2Fstack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha1-CoUdO9lkmPolwzq3J47TvWXwbD4=
 
+"@types/uuid@^3.0.0":
+  version "3.4.9"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-3.4.9.tgz#fcf01997bbc9f7c09ae5f91383af076d466594e1"
+  integrity sha512-XDwyIlt/47l2kWLTzw/mtrpLdB+GPSskR2n/PIcPn+VYhVO77rGhRncIR5GPU0KRzXuqkDO+J5qqrG0Y8P6jzQ==
+
 "@types/yargs-parser@*":
   version "15.0.0"
   resolved "https://registry.npm.taobao.org/@types/yargs-parser/download/@types/yargs-parser-15.0.0.tgz?cache=0&sync_timestamp=1580844439343&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fyargs-parser%2Fdownload%2F%40types%2Fyargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"
@@ -7873,10 +7878,10 @@ shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
 
-shock-common@0.x.x:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/shock-common/-/shock-common-0.5.0.tgz#308a8c189c502c03a7810815858a3cba1240f2c4"
-  integrity sha512-IMANrEfniLgJ2BV2eEkfXGGTpyr3VytgNFBMG5H4QrYFPENjWsKy692ClIITBFgUhGBcHpAL9Zc11e+fKavkqA==
+shock-common@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/shock-common/-/shock-common-1.0.0.tgz#67906ce014cac5c51e7050ee335cf34b698de7df"
+  integrity sha512-bV+R3AgZ6wIRfK4LO2N9SZQ3eK7iSOS8WtiLLiC070MlDC+8uINIvhXS2BpJmIU8TezvxItHkCxic2CNlFjKSA==
   dependencies:
     immer "^6.0.6"
     lodash "^4.17.15"
