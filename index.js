@@ -183,7 +183,7 @@ Http.interceptors.request.use(async config => {
     const { connection } = store.getState()
     try {
       const nodeURL = await Cache.getNodeURL()
-      if (config.url && config.url.indexOf('http') === -1 && nodeURL) {
+      if (config.url && !config.url.includes('http') && nodeURL) {
         // eslint-disable-next-line require-atomic-updates
         config.baseURL = `http://${nodeURL}`
       }
@@ -287,14 +287,14 @@ const decryptResponse = async response => {
     const path = url.parse(response?.config.url).pathname
     Logger.log('[ENCRYPTION] Decrypting Path:', path)
 
-    // if (response.status === 304) {
-    //   Logger.log('Using cached response for: ', path)
-    //   const cachedData = cache.get(path)
+    if (response.status === 304) {
+      Logger.log('Using cached response for: ', path)
+      const cachedData = cache.get(path)
 
-    //   if (cachedData?.response) {
-    //     return { ...cachedData.response, status: 304 }
-    //   }
-    // }
+      if (cachedData?.response) {
+        return { ...cachedData.response, status: 304 }
+      }
+    }
 
     if (DISABLE_SHOCK_ENCRYPTION === 'true') {
       return response

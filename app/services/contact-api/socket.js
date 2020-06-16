@@ -6,6 +6,8 @@ import isEmpty from 'lodash/isEmpty'
 import debounce from 'lodash/debounce'
 import Logger from 'react-native-file-log'
 import { Constants } from 'shock-common'
+// @ts-ignore
+import { DISABLE_SHOCK_ENCRYPTION } from 'react-native-dotenv'
 
 import * as Cache from '../../services/cache'
 import { ACTIONS as ConnectionAction } from '../../actions/ConnectionActions'
@@ -72,6 +74,10 @@ export const encryptSocketData = async data => {
 
   Logger.log('APIPublicKey', APIPublicKey)
 
+  if (DISABLE_SHOCK_ENCRYPTION === 'true') {
+    return data
+  }
+
   if (!APIPublicKey && !isEmpty(data)) {
     throw new Error(
       'Please exchange keys with the API before sending any data through WebSockets',
@@ -97,7 +103,11 @@ export const encryptSocketData = async data => {
  * @param {any} data
  */
 export const decryptSocketData = async data => {
-  if (data && data.encryptedKey) {
+  if (DISABLE_SHOCK_ENCRYPTION === 'true') {
+    return data
+  }
+
+  if (data?.encryptedKey) {
     const decryptionTime = Date.now()
     Logger.log('[SOCKET] Decrypting Data...', data)
     const { sessionId } = store.getState().connection

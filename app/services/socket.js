@@ -1,6 +1,8 @@
 import SocketIO from 'socket.io-client'
 import isEmpty from 'lodash/isEmpty'
 import Logger from 'react-native-file-log'
+// @ts-ignore
+import { DISABLE_SHOCK_ENCRYPTION } from 'react-native-dotenv'
 
 import * as Cache from './cache'
 import * as Encryption from './encryption'
@@ -96,6 +98,10 @@ class Socket {
    * @param {object} data
    */
   encryptSocketData = async data => {
+    if (DISABLE_SHOCK_ENCRYPTION === 'true') {
+      return data
+    }
+
     if (this.store) {
       const { APIPublicKey } = this.store.getState().connection
 
@@ -127,9 +133,13 @@ class Socket {
    * @param {any} data
    */
   decryptSocketData = async data => {
-    if (data && data.encryptedKey && this.store) {
+    if (DISABLE_SHOCK_ENCRYPTION !== 'true') {
+      return data
+    }
+
+    if (data?.encryptedKey && this.store) {
       const decryptionTime = Date.now()
-      Logger.log('[LND SOCKET] Decrypting Daobjectta...', data)
+      Logger.log('[LND SOCKET] Decrypting Data...', data)
       const { sessionId } = this.store.getState().connection
       const decryptedKey = await Encryption.decryptKey(
         data.encryptedKey,
